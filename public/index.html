@@ -31,7 +31,7 @@
         </nav>
         <div class="side-rule"></div>
         <p class="nav-label">DATA STRUCTURES</p>
-        <div class="structure-note"><span class="structure-symbol">FIFO</span><span><strong>Queue</strong><small>First in, first out</small></span></div>
+        <div class="structure-note"><span class="structure-symbol">PRIO</span><span><strong>Priority queue</strong><small>Critical first; FIFO ties</small></span></div>
         <div class="structure-note"><span class="structure-symbol stack-symbol">LIFO</span><span><strong>Stack</strong><small>Last in, first out</small></span></div>
         <div class="sidebar-bottom">
           <div class="on-call"><span class="online-dot"></span><span><strong>System online</strong><small>MongoDB connected</small></span></div>
@@ -53,12 +53,12 @@
           <section class="metrics-grid" aria-label="Incident summary">
             <article class="metric"><span class="metric-icon coral">!</span><div class="metric-info"><span>Open incidents</span><strong id="metric-open">—</strong><small>Waiting in the queue</small></div><span class="metric-accent coral"></span></article>
             <article class="metric"><span class="metric-icon gold">↗</span><div class="metric-info"><span>Critical priority</span><strong id="metric-critical">—</strong><small>Needs attention first</small></div><span class="metric-accent gold"></span></article>
-            <article class="metric"><span class="metric-icon green">≡</span><div class="metric-info"><span>Queue length</span><strong id="metric-queue">—</strong><small>Processed in FIFO order</small></div><span class="metric-accent green"></span></article>
+            <article class="metric"><span class="metric-icon green">≡</span><div class="metric-info"><span>Queue length</span><strong id="metric-queue">—</strong><small>Highest priority processed first</small></div><span class="metric-accent green"></span></article>
             <article class="metric"><span class="metric-icon blue">▤</span><div class="metric-info"><span>Resolved stack</span><strong id="metric-stack">—</strong><small>Most recent action on top</small></div><span class="metric-accent blue"></span></article>
           </section>
 
           <section class="action-strip">
-            <div class="next-item"><span class="strip-icon">≡</span><div><span class="panel-kicker">NEXT IN FIFO QUEUE</span><strong id="next-incident">Loading the next incident…</strong></div></div>
+            <div class="next-item"><span class="strip-icon">≡</span><div><span class="panel-kicker">NEXT BY PRIORITY</span><strong id="next-incident">Loading the next incident…</strong></div></div>
             <button class="secondary-button" id="process-button">Process next <span>→</span></button>
             <span class="strip-divider"></span>
             <div class="next-item stack-next"><span class="strip-icon stack-strip-icon">▤</span><div><span class="panel-kicker">TOP OF LIFO STACK</span><strong id="stack-top">Nothing to undo yet</strong></div></div>
@@ -74,8 +74,8 @@
             <aside class="panel how-panel">
               <div class="panel-heading"><div><div class="panel-kicker">HOW IT WORKS</div><h2>DSA in action</h2></div><span class="how-mark">↗</span></div>
               <div class="how-content">
-                <div class="how-step"><span class="step-number">01</span><div><strong>Report an incident</strong><p>New reports join the back of the queue.</p></div></div>
-                <div class="how-step"><span class="step-number">02</span><div><strong>Process in order</strong><p>The oldest open incident is handled first (FIFO).</p></div></div>
+                <div class="how-step"><span class="step-number">01</span><div><strong>Report an incident</strong><p>New reports join the incident queue with a priority.</p></div></div>
+                <div class="how-step"><span class="step-number">02</span><div><strong>Process in order</strong><p>Critical, High, Medium, then Low. Older reports go first on ties.</p></div></div>
                 <div class="how-step"><span class="step-number">03</span><div><strong>Undo if needed</strong><p>The latest resolved incident returns first (LIFO).</p></div></div>
               </div>
               <div class="structure-card"><div class="structure-card-title"><span>LIVE STRUCTURE</span><span class="structure-live"><i></i> ACTIVE</span></div><div class="structure-row"><span class="structure-tag">QUEUE</span><span id="queue-visual">0 incidents waiting</span><code>front → back</code></div><div class="structure-row"><span class="structure-tag tag-stack">STACK</span><span id="stack-visual">0 resolved items</span><code>top → bottom</code></div></div>

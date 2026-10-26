@@ -3,7 +3,7 @@ import express from 'express'
 import { MongoClient, ObjectId } from 'mongodb'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { IncidentQueue, IncidentStack } from './structures.js'
+import { compareIncidentPriority, IncidentQueue, IncidentStack } from './structures.js'
 
 const app = express()
 const port = Number(process.env.PORT ?? 3000)
@@ -60,6 +60,7 @@ async function getOpenQueue() {
   const result = await incidents.find({ status: 'OPEN' })
     .sort({ createdAt: 1, _id: 1 })
     .toArray()
+  result.sort(compareIncidentPriority)
   const queue = new IncidentQueue()
   result.forEach((incident) => queue.enqueue(incident))
   return queue
@@ -76,7 +77,7 @@ app.get('/api/dashboard', async (_request, response) => {
       queueLength: queue.length,
       queueNext: queue.peek() ? toApiIncident(queue.peek()) : null,
       stackLength: completedStack.length,
-      stackTop: completedStack.peek() ? toApiIncident(completedStack.peek()) : null
+      stackTop: completedStack.peek()
     })
   } catch (error) {
     sendError(response, error)

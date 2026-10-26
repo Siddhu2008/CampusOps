@@ -48,6 +48,12 @@ function relativeTime(value) {
   return `${Math.floor(hours / 24)}d ago`
 }
 
+function compareIncidentPriority(first, second) {
+  const priorityOrder = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 }
+  const priorityDifference = (priorityOrder[first.priority] ?? 4) - (priorityOrder[second.priority] ?? 4)
+  return priorityDifference || new Date(first.createdAt) - new Date(second.createdAt) || first.id.localeCompare(second.id)
+}
+
 function showToast(message, isError = false) {
   clearTimeout(toastTimer)
   elements.toast.textContent = message
@@ -72,7 +78,7 @@ function setActiveView(view) {
   const titles = { overview: 'Incident overview', queue: 'Incident queue', stack: 'Resolved stack' }
   elements.breadcrumb.textContent = labels[view]
   elements.pageTitle.innerHTML = `${titles[view]}<span class="heading-period">.</span>`
-  elements.tableTitle.textContent = view === 'queue' ? 'Waiting in FIFO order' : view === 'stack' ? 'Resolved incidents' : 'Recent incidents'
+  elements.tableTitle.textContent = view === 'queue' ? 'Waiting by priority' : view === 'stack' ? 'Resolved incidents' : 'Recent incidents'
   document.querySelectorAll('.nav-item').forEach((button) => {
     button.classList.toggle('active', button.dataset.view === view)
   })
@@ -87,7 +93,7 @@ function renderTable() {
   if (activeView === 'queue') incidents = incidents.filter((incident) => incident.status === 'OPEN')
   if (activeView === 'stack') incidents = incidents.filter((incident) => incident.status === 'DONE')
   if (activeView === 'overview' && statusFilter !== 'ALL') incidents = incidents.filter((incident) => incident.status === statusFilter)
-  if (activeView === 'queue') incidents = [...incidents].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt) || a.id.localeCompare(b.id))
+  if (activeView === 'queue') incidents = [...incidents].sort(compareIncidentPriority)
   incidents = incidents.filter((incident) => `${incident.title} ${incident.category} ${incident.description}`.toLowerCase().includes(search))
 
   if (incidents.length === 0) {

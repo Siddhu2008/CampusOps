@@ -5,23 +5,24 @@ CampusOps is a small campus operations dashboard built to demonstrate how two cl
 The project simulates a campus help desk where students or staff report problems such as broken chairs, Wi-Fi issues, water leaks, or projector failures. The dashboard shows incidents in a clean operations-console layout and lets the user:
 
 - add new incidents to the queue
-- process the oldest open incident first
+- process incidents in priority order: Critical, High, Medium, then Low
 - mark incidents as resolved and push them onto a stack
 - undo the latest resolved action and bring it back to the queue
 
-This makes the project a practical DSA demo: instead of only showing abstract array operations, it applies FIFO and LIFO logic to real-world incident management.
+Incidents with the same priority are processed oldest-first, combining priority-based selection with FIFO ordering for ties.
 
 ## What this project does
 
-### Queue behavior (FIFO)
+### Queue behavior (priority with FIFO ties)
 
-A queue follows First In, First Out. The first incident reported is the first one processed.
+Open incidents are ordered by priority: Critical, High, Medium, then Low.
 
 In this app:
 
-- new incidents are inserted at the back of the queue
+- higher-priority incidents are placed ahead of lower-priority incidents
+- incidents with the same priority stay in reported order (FIFO)
 - the dashboard shows the next incident waiting in line
-- the "Process next" action removes the oldest open incident from the queue
+- the "Process next" action resolves the highest-priority open incident
 - the incident is marked as resolved in MongoDB
 
 ### Stack behavior (LIFO)
@@ -140,8 +141,8 @@ http://localhost:3000
 ## How to use it
 
 1. Click "Report incident" to add a new problem.
-2. The incident appears at the back of the queue.
-3. Click "Process next" to clear the oldest incident first.
+2. The incident appears in the queue according to its priority.
+3. Click "Process next" to resolve the highest-priority incident (Critical, High, Medium, Low). The oldest incident is first when priorities match.
 4. The resolved incident is pushed to the stack.
 5. Click "Undo latest" to reopen the most recent resolved incident.
 6. Restart the app and the resolved incidents are restored from MongoDB.
@@ -158,7 +159,7 @@ npm test
 
 The test suite checks:
 
-- queue behavior is FIFO
+- queue ordering follows Critical, High, Medium, Low, with FIFO ordering for equal priorities
 - queue order is preserved correctly after repeated dequeue operations
 - stack behavior is LIFO
 

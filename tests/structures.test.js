@@ -1,6 +1,21 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { IncidentQueue, IncidentStack } from '../structures.js'
+import { compareIncidentPriority, IncidentQueue, IncidentStack } from '../structures.js'
+
+test('incident priority orders critical, high, medium, then low with FIFO ties', () => {
+  const incidents = [
+    { id: 'low', priority: 'LOW', createdAt: '2026-01-01T09:00:00Z' },
+    { id: 'medium', priority: 'MEDIUM', createdAt: '2026-01-01T09:00:00Z' },
+    { id: 'high-new', priority: 'HIGH', createdAt: '2026-01-01T09:02:00Z' },
+    { id: 'high-old', priority: 'HIGH', createdAt: '2026-01-01T09:01:00Z' },
+    { id: 'critical', priority: 'CRITICAL', createdAt: '2026-01-01T09:03:00Z' }
+  ]
+
+  assert.deepEqual(
+    incidents.sort(compareIncidentPriority).map((incident) => incident.id),
+    ['critical', 'high-old', 'high-new', 'medium', 'low']
+  )
+})
 
 test('queue processes incidents in first-in, first-out order', () => {
   const queue = new IncidentQueue()

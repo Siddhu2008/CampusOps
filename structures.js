@@ -1,3 +1,20 @@
+const priorityOrder = {
+  CRITICAL: 0,
+  HIGH: 1,
+  MEDIUM: 2,
+  LOW: 3
+}
+
+export function compareIncidentPriority(first, second) {
+  const priorityDifference = (priorityOrder[first.priority] ?? 4) - (priorityOrder[second.priority] ?? 4)
+  if (priorityDifference !== 0) return priorityDifference
+
+  const timeDifference = new Date(first.createdAt) - new Date(second.createdAt)
+  if (timeDifference !== 0) return timeDifference
+
+  return String(first._id ?? first.id).localeCompare(String(second._id ?? second.id))
+}
+
 export class IncidentQueue {
   #items = []
   #head = 0
